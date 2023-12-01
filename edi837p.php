@@ -980,158 +980,159 @@ error_reporting(E_ALL);
 	}
 
 
-	function create_x12_837_file($res,$segTer,$eleDataSep,$compEleSep){
+	function create_x12_837_file($res,$segTer,$eleDataSep,$compEleSep, $minified=false){
 
 		$file_data = "";
 		$loopcounter = 0;
+		$eol = $minified ?"":PHP_EOL;
 		foreach($res as $row){ 
 			//print_r($row);exit;
 			
-			$file_data .= create_ISA($row,$segTer,$compEleSep).PHP_EOL;
-			$file_data .= create_GS($row,$segTer,$compEleSep).PHP_EOL;
+			$file_data .= create_ISA($row,$segTer,$compEleSep).$eol;
+			$file_data .= create_GS($row,$segTer,$compEleSep).$eol;
 			## ST Count Should start from here including ST			
-			$file_data .= create_ST($row,$segTer,$compEleSep).PHP_EOL;  ++$loopcounter;
-			$file_data .= create_BHT($row,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_ST($row,$segTer,$compEleSep).$eol;  ++$loopcounter;
+			$file_data .= create_BHT($row,$segTer,$compEleSep).$eol; ++$loopcounter;
 
 			## SUBMITTER NAME-1000A
-			$file_data .= create_NM1($row,'SUBMITTER',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_NM1($row,'SUBMITTER',$segTer,$compEleSep).$eol; ++$loopcounter;
 
 			if(!empty($row['submitter_telephone'])){
 				## SUBMITTER EDI CONTACT INFORMATION-1000A
-				$file_data .= create_PER($row,'TE',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_PER($row,'TE',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 			if(!empty($row['submitter_email'])){
 				## SUBMITTER EDI CONTACT INFORMATION-1000A
-				$file_data .= create_PER($row,'EM',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_PER($row,'EM',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 			if(!empty($row['submitter_fax'])){
 				## SUBMITTER EDI CONTACT INFORMATION-1000A
-				$file_data .= create_PER($row,'FX',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_PER($row,'FX',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 
 			## RECEIVER NAME-1000B
-			$file_data .= create_NM1($row,'RC',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_NM1($row,'RC',$segTer,$compEleSep).$eol; ++$loopcounter;
 
 			## 2010AA BILLING PROVIDER HL LOOP
-			$file_data .= create_HL($row,1,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;			
+			$file_data .= create_HL($row,1,$segTer,$compEleSep).$eol; ++$loopcounter;			
 			## BILLING PROVIDER NAME 2010AA
-			$file_data .= create_NM1($row,'BP',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_NM1($row,'BP',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## BILLING PROVIDER ADDRESS
-			$file_data .= create_N3($row,'BP',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_N3($row,'BP',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## BILLING PROVIDER CITY, STATE, ZIP CODE
-			$file_data .= create_N4($row,'BP',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_N4($row,'BP',$segTer,$compEleSep).$eol; ++$loopcounter;
 
 			## Situational PRV segment for provider taxonomy code for Medicaid. only applicable for MC
 			if(!empty($row['biller_tax_code'])){
-				$file_data .= create_PRV($row,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_PRV($row,$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 
 			
 			## BILLING PROVIDER SECONDARY IDENTIFICATION- S
 			if(!empty($row['billing_provider_federal_taxid'])){
 
-				$file_data .= create_REF($row,'EI',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_REF($row,'EI',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}elseif(!empty($row['billing_provider_pin'])){
 
-				$file_data .= create_REF($row,'SY',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_REF($row,'SY',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 
 			## 2010AB PAY-TO PROVIDER
 			## PAY-TO PROVIDER NAME 2010AB
-			$file_data .= create_NM1($row,'87',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_NM1($row,'87',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## PAY-TO PROVIDER ADDRESS
-			$file_data .= create_N3($row,'BP',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_N3($row,'BP',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## PAY-TO PROVIDER CITY, STATE, ZIP CODE
-			$file_data .= create_N4($row,'BP',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_N4($row,'BP',$segTer,$compEleSep).$eol; ++$loopcounter;
 
 
 			## SUBSCRIBER HIERARCHICAL LEVEL 2000B
-			$file_data .= create_HL($row,2,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_HL($row,2,$segTer,$compEleSep).$eol; ++$loopcounter;
 			## SUBSCRIBER INFORMATION 2000B
-			$file_data .= create_SBR($row,'PR',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_SBR($row,'PR',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## SUBSCRIBER SECONDARY IDENTIFICATION 2010BA
-			$file_data .= create_NM1($row,'IL',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_NM1($row,'IL',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## SUBSCRIBER ADDRESS 2010BA
-			$file_data .= create_N3($row,'SB',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_N3($row,'SB',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## SUBSCRIBER ADDRESS 2010BA
-			$file_data .= create_N4($row,'SB',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_N4($row,'SB',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## SUBSCRIBER DEMOGRAPHIC INFORMATION 2010BA
-			$file_data .= create_DMG($row,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_DMG($row,$segTer,$compEleSep).$eol; ++$loopcounter;
 
 			## PAYER NAME Loop 2010BB
-			$file_data .= create_NM1($row,'PR',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_NM1($row,'PR',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## PAYER ADDRESS 2010BB
-			$file_data .= create_N3($row,'PR',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_N3($row,'PR',$segTer,$compEleSep).$eol; ++$loopcounter;
 			## PAYER CITY, STATE, ZIP CODE
-			$file_data .= create_N4($row,'PR',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_N4($row,'PR',$segTer,$compEleSep).$eol; ++$loopcounter;
 
 			## CLAIM INFORMATION 2300
-			$file_data .= create_CLM($row,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_CLM($row,$segTer,$compEleSep).$eol; ++$loopcounter;
 
 			## DATE ONSET OF CURRENT ILLNESS OR SYMPTOM
-			$file_data .= create_DTP($row,'431',$segTer,$compEleSep).PHP_EOL;/* S */ ++$loopcounter;
+			$file_data .= create_DTP($row,'431',$segTer,$compEleSep).$eol;/* S */ ++$loopcounter;
 			## DATE - INITIAL TREATMENT DATE 2300
-			$file_data .= create_DTP($row,'454',$segTer,$compEleSep).PHP_EOL;/* S */ ++$loopcounter;
+			$file_data .= create_DTP($row,'454',$segTer,$compEleSep).$eol;/* S */ ++$loopcounter;
 			## DATE - LAST SEEN DATE 2300
-			$file_data .= create_DTP($row,'304',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+			$file_data .= create_DTP($row,'304',$segTer,$compEleSep).$eol; ++$loopcounter;
 			
 			if(!empty($row['patient_discharge_date'])){
 				## DATE OF DISCHARGE 2300
-				$file_data .= create_DTP($row,'096',$segTer,$compEleSep).PHP_EOL;/* S */ ++$loopcounter;
+				$file_data .= create_DTP($row,'096',$segTer,$compEleSep).$eol;/* S */ ++$loopcounter;
 			}
 
 			if(!empty($row['patient_admission_date'])){
 				## DATE OF ADMISSION 2300
-				$file_data .= create_DTP($row,'435',$segTer,$compEleSep).PHP_EOL;/* S */ ++$loopcounter;
+				$file_data .= create_DTP($row,'435',$segTer,$compEleSep).$eol;/* S */ ++$loopcounter;
 			}
 
 
 			if(!empty($row['patient_paid_amt'])){
 			## PATIENT AMOUNT PAID 2300
-				$file_data .= create_AMT($row,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_AMT($row,$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 
 			if(!empty($row['referral_number'])){
 			## REFERRAL NUMBER 2300 **Required when Referring Provider is sent (REF*DN)
-				$file_data .= create_REF($row,'9F',$segTer,$compEleSep).PHP_EOL; /* S */ ++$loopcounter;
+				$file_data .= create_REF($row,'9F',$segTer,$compEleSep).$eol; /* S */ ++$loopcounter;
 			}
 
 			if(!empty($row['prior_auth_code'])){
 			## PRIOR AUTHORIZATION 2300
-				$file_data .= create_REF($row,'G1',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_REF($row,'G1',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 
 			if($row['claim_type'] != 1){				
 			## PAYER CLAIM CONTROL NUMBER 2300 (Required when CLM05-03 indicates replacement or void
-				$file_data .= create_REF($row,'F8',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_REF($row,'F8',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 
 			if(!empty($row['original_claim_number'])){
 			## CLINICAL LABORATORY IMPROVEMENT AMENDMENT Facilities performing CLIA covered Laboratory services S
-				$file_data .= create_REF($row,'X4',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_REF($row,'X4',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 
 			if(!empty($row['patient_mrn'])){
 				## MEDICAL RECORD NUMBER 2300
-				$file_data .= create_REF($row,'EA',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_REF($row,'EA',$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 
 			if(!empty($row['claim_notes'])){
 			## CLAIM NOTE 2300
-				$file_data .= create_NTE($row,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_NTE($row,$segTer,$compEleSep).$eol; ++$loopcounter;
 			} 
 			## HEALTH CARE DIAGNOSIS CODE 2300
-			$file_data .= create_HI($row,1,$segTer,$compEleSep).PHP_EOL;
+			$file_data .= create_HI($row,1,$segTer,$compEleSep).$eol;
 			++$loopcounter;
 				 /* Primary Problem code ICD 9 or ICD 10*/
 
 			if(sizeof($row['other_diag_list'])){
-				$file_data .= create_HI($row,2,$segTer,$compEleSep).PHP_EOL;
+				$file_data .= create_HI($row,2,$segTer,$compEleSep).$eol;
 				++$loopcounter; /* secondart type code ICD 9 or ICD 10*/
 			}
 
 			## REFERRING PROVIDER NAME 2310A 
-			$file_data .= create_NM1($row,'DN',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;/* S */
+			$file_data .= create_NM1($row,'DN',$segTer,$compEleSep).$eol; ++$loopcounter;/* S */
 			//Rendering Provider - S
 			// Per the implementation guide lines, only include this information if it is different
 	    	// RENDERING PROVIDER NAME  Loop 2310B than the Loop 2010AA information
@@ -1147,26 +1148,26 @@ error_reporting(E_ALL);
 
 			/*S OTHER SUBSCRIBER INFORMATION 2320*/
 			if(!empty($row['subscriber_secondary_group_number'])){
-				$file_data .= create_SBR($row,'OT',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_SBR($row,'OT',$segTer,$compEleSep).$eol; ++$loopcounter;
 
 				## Other Insurance Coverage Information
 				//$file_data .= create_OI($row,$segTer,$compEleSep); ++$loopcounter;
 				## OTHER SUBSCRIBER NAME 2330A
 				## When passing secondary info policy number also should be changed
 				$row['subscriber_policy_number'] = $row['subscriber_secondary_group_number'];
-				$file_data .= create_NM1($row,'IL',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;			
-				$file_data .= create_N3($row,'SB',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
-				$file_data .= create_N4($row,'SB',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_NM1($row,'IL',$segTer,$compEleSep).$eol; ++$loopcounter;			
+				$file_data .= create_N3($row,'SB',$segTer,$compEleSep).$eol; ++$loopcounter;
+				$file_data .= create_N4($row,'SB',$segTer,$compEleSep).$eol; ++$loopcounter;
 
 				## OTHER PAYER NAME 2330B
 				if(!empty($row['secondary_payer_name'])){
-					$file_data .= create_NM1($row,'PR2',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+					$file_data .= create_NM1($row,'PR2',$segTer,$compEleSep).$eol; ++$loopcounter;
 				}
 				if(!empty($row['secondary_payer_street'])){
-					$file_data .= create_N3($row,'PR2',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+					$file_data .= create_N3($row,'PR2',$segTer,$compEleSep).$eol; ++$loopcounter;
 				}
 				if(!empty($row['secondary_payer_city'])){
-					$file_data .= create_N4($row,'PR2',$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+					$file_data .= create_N4($row,'PR2',$segTer,$compEleSep).$eol; ++$loopcounter;
 				}
 			}
 			
@@ -1178,23 +1179,23 @@ error_reporting(E_ALL);
 				$loopindex = 1;
 				foreach($row['procedure_codes'] as $proc_items){
 					## SERVICE LINE NUMBER 2400 - Loop this with all procedure codes
-					$file_data .= create_LX($row,$loopindex,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+					$file_data .= create_LX($row,$loopindex,$segTer,$compEleSep).$eol; ++$loopcounter;
 					## PROFESSIONAL SERVICE 2400
-					$file_data .= create_SV1($row,$proc_items, $segTer,$compEleSep).PHP_EOL; ++$loopcounter;
-					$file_data .= create_DTP($row,472,$segTer,$compEleSep,$proc_items['dos']).PHP_EOL; ++$loopcounter;
+					$file_data .= create_SV1($row,$proc_items, $segTer,$compEleSep).$eol; ++$loopcounter;
+					$file_data .= create_DTP($row,472,$segTer,$compEleSep,$proc_items['dos']).$eol; ++$loopcounter;
 					/* The encounter loops ends here */
 					$loopindex++;
 				}
 			}
 
 			if(!empty($row['claim_notes'])){
-				$file_data .= create_NTE($row,$segTer,$compEleSep).PHP_EOL; ++$loopcounter;
+				$file_data .= create_NTE($row,$segTer,$compEleSep).$eol; ++$loopcounter;
 			}
 			## Segment count should start from ST to SE
 			++$loopcounter;
-			$file_data .= create_SE($row,$loopcounter,$segTer,$compEleSep).PHP_EOL; 
-			$file_data .= create_GE($row,$segTer,$compEleSep).PHP_EOL; 
-			$file_data .= create_IEA($row,$segTer,$compEleSep).PHP_EOL;
+			$file_data .= create_SE($row,$loopcounter,$segTer,$compEleSep).$eol; 
+			$file_data .= create_GE($row,$segTer,$compEleSep).$eol; 
+			$file_data .= create_IEA($row,$segTer,$compEleSep).$eol;
 		}
 
 		$file = fopen("2021121519.837","w");
